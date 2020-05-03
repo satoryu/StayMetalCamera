@@ -11,8 +11,12 @@ module.exports = async function (context, req) {
     });
     const faceClient = new faceSdk.FaceClient(cognitiveServiceCredentials, faceApiEndpoint)
 
-    const arrayBuffer = Uint8Array.from(req.rawBody.split(''), e => e.charCodeAt(0)).buffer;
-    const response = await faceClient.face.detectWithStream(arrayBuffer, { returnFaceLandmarks: true })
+    const arrayBuffer = Buffer.from(req.rawBody).buffer;
+    const detectionOptions = {
+        detectionModel: 'detection_02',
+        returnFaceLandmarks: true
+    }
+    const response = await faceClient.face.detectWithStream(arrayBuffer, detectionOptions)
 
     context.log(response._response.bodyAsText)
 
