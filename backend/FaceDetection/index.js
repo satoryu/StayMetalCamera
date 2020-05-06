@@ -11,7 +11,7 @@ module.exports = async function (context, req) {
     });
     const faceClient = new faceSdk.FaceClient(cognitiveServiceCredentials, faceApiEndpoint)
 
-    const arrayBuffer = Buffer.from(req.rawBody).buffer;
+    const arrayBuffer = Buffer.from(req.body).buffer;
     const detectionOptions = {
         detectionModel: 'detection_01',
         recognitionModel: 'recognition_02',
@@ -23,6 +23,6 @@ module.exports = async function (context, req) {
 
     context.res = {
         // status: 200, /* Defaults to 200 */
-        body: responseMessage
+        body: response._response.parsedBody
     };
 }
