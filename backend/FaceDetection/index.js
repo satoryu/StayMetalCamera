@@ -14,7 +14,7 @@ module.exports = async function (context, req) {
     const arrayBuffer = Buffer.from(req.body).buffer;
     const detectionOptions = {
         detectionModel: 'detection_01',
-        recognitionModel: 'recognition_02',
+        recognitionModel: 'recognition_01',
         returnFaceLandmarks: true
     }
     const response = await faceClient.face.detectWithStream(arrayBuffer, detectionOptions)
