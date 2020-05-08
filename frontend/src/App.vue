@@ -1,42 +1,6 @@
 <template>
   <v-app>
-    <v-app-bar
-      app
-      color="black"
-      dark
-    >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
-    </v-app-bar>
-
+    <AppBar />
     <v-content>
       <v-row
         align="center"
@@ -46,7 +10,9 @@
           cols="10"
           sm="8"
         >
-          <VideoPreview/>
+          <CameraPreview
+            @capture="makeStayMetal"
+          />
         </v-col>
       </v-row>
     </v-content>
@@ -54,17 +20,58 @@
 </template>
 
 <script>
-import VideoPreview from './components/VideoPreview';
+import { detect } from './lib/faceDetection';
+import maskImageUrl from './assets/su-mask.png';
+const maskImage = new Image();
+maskImage.src = maskImageUrl;
+
+import AppBar from './components/AppBar'
+import CameraPreview from './components/CameraPreview';
 
 export default {
   name: 'App',
 
   components: {
-    VideoPreview,
+    AppBar,
+    CameraPreview
   },
 
   data: () => ({
-    //
+    maskImageBlob: null
   }),
+
+  methods: {
+    makeStayMetal: async function(faceImageBlob) {
+      this.image = faceImageBlob
+
+      const facePositions = await detect(faceImageBlob)
+      const img = new Image()
+      const url = URL.createObjectURL(faceImageBlob)
+      const vm = this;
+      img.addEventListener('load', function() {
+        URL.revokeObjectURL(faceImageBlob)
+        const canvas = document.createElement('canvas')
+        canvas.width = img.width
+        canvas.height = img.height
+        const ctx = canvas.getContext('2d')
+        ctx.drawImage(img, 0, 0)
+
+        facePositions.forEach( element => {
+          const { faceRectangle, faceLandmarks } = element;
+
+          ctx.drawImage(maskImage,
+              faceRectangle.left, faceLandmarks.noseLeftAlarTop.y,
+              faceRectangle.width,
+              (faceRectangle.top + faceRectangle.height - faceLandmarks.noseLeftAlarTop.y)
+          )
+        })
+
+        canvas.toBlob(function(blob) {
+          vm.maskImageBlob = blob
+        })
+      })
+      img.src = url
+    }
+  }
 };
 </script>
