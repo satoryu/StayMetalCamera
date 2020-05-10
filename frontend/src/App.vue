@@ -19,9 +19,11 @@
               <v-card-text>Is this OK?</v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn @click="maskImageBlob = null">Retake</v-btn>
+                <v-btn @click="maskImageBlob = null">
+                  <v-icon class="mr-2">fas fa-undo</v-icon>Retake
+                </v-btn>
                 <v-btn color="primary" @click="download">
-                  <v-icon>fas fa-download</v-icon>Download
+                  <v-icon class="mr-2">fas fa-download</v-icon>Download
                 </v-btn>
               </v-card-actions>
             </v-card>

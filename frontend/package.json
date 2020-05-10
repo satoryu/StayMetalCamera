@@ -13,6 +13,7 @@
   },
   "main": "index.js",
   "dependencies": {
+    "@microsoft/applicationinsights-web": "^2.5.4",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
     "vue": "^2.6.11",
