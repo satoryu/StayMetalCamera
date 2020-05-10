@@ -25,7 +25,7 @@ steps:
 - task: AzureCLI@2
   displayName: 'Deploy Vue app to Blob'
   inputs:
-    connectedServiceNameARM: $(AZURE_SUBSCRIPTION)
+    connectedServiceNameARM: 'Azure Resource Manager'
     scriptType: 'bash'
     scriptLocation: 'inlineScript'
     inlineScript: |
